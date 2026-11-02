@@ -19,28 +19,24 @@
     <div id="loading">Initializing Camera & AR...</div>
 
     <script>
-        // Extract unique ID from URL (e.g., ?id=frame001)
         const urlParams = new URLSearchParams(window.location.search);
         const frameId = urlParams.get('id');
 
         if (!frameId) {
             document.getElementById('loading').innerText = "Error: No Frame ID specified in the link!";
         } else {
-            // Dynamic file paths pointing to your folders
             const mindFileUrl = `./targets/${frameId}.mind`;
             const videoFileUrl = `./videos/${frameId}.mp4`;
 
-            // Inject the AR Scene dynamically
             document.write(`
                 <a-scene mindar-image="imageTargetSrc: ${mindFileUrl}; autoStart: true;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
                     <a-assets>
-                        <video id="giftVideo" src="${videoFileUrl}" preload="auto" loop crossorigin="anonymous" webkit-playsinline playsinline></video>
+                        <video id="giftVideo" src="${videoFileUrl}" preload="auto" loop crossorigin="anonymous" playsinline webkit-playsinline></video>
                     </a-assets>
 
                     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
                     <a-entity mindar-image-target="targetIndex: 0" id="arTarget">
-                        <!-- Video Layout Size: Change width and height here to match your frame proportions -->
                         <a-video src="#giftVideo" position="0 0 0" rotation="0 0 0" width="1" height="0.5625"></a-video>
                     </a-entity>
                 </a-scene>
@@ -49,7 +45,6 @@
     </script>
 
     <script>
-        // Auto play/pause when the camera detects or loses the target photo
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const targetEl = document.querySelector("#arTarget");
@@ -57,9 +52,14 @@
                 const loadingEl = document.querySelector("#loading");
 
                 if (targetEl && videoEl) {
+                    // Ensure video loads metadata so it doesn't stay blank
+                    videoEl.load();
+
                     targetEl.addEventListener("targetFound", () => {
                         loadingEl.style.display = 'none';
-                        videoEl.play();
+                        videoEl.play().catch(error => {
+                            console.log("Autoplay prevented:", error);
+                        });
                     });
 
                     targetEl.addEventListener("targetLost", () => {
