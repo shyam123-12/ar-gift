@@ -3,7 +3,6 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <title>AR Memory Frame</title>
-    <!-- Stable CDN Script Imports -->
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <style>
@@ -24,7 +23,6 @@
 </head>
 <body>
 
-    <!-- Permission & Start Overlay -->
     <div id="overlay">
         <h2>AR Memory Frame</h2>
         <p>Tap below to start the camera and view your video frame.</p>
@@ -32,7 +30,6 @@
         <div id="errorMsg"></div>
     </div>
 
-    <!-- Static AR Scene (No dynamic injection to prevent white screens) -->
     <a-scene 
         mindar-image="imageTargetSrc: ./targets/frame001.mind; autoStart: false;" 
         color-space="sRGB" 
@@ -41,13 +38,15 @@
         device-orientation-permission-ui="enabled: false">
         
         <a-assets>
-            <video id="giftVideo" src="./videos/frame001.mp4" preload="auto" loop crossorigin="anonymous" playsinline webkit-playsinline></video>
+            <!-- Explicitly muted and playsinline to force mobile browser decoding -->
+            <video id="giftVideo" src="./videos/frame001.mp4" preload="auto" loop autoplay muted crossorigin="anonymous" playsinline webkit-playsinline></video>
         </a-assets>
 
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
         <a-entity mindar-image-target="targetIndex: 0" id="arTarget">
-            <a-video src="#giftVideo" position="0 0 0" rotation="0 0 0" width="1" height="0.5625"></a-video>
+            <!-- Adjusted width/height to match your 720x1280 (9:16) portrait video ratio -->
+            <a-video src="#giftVideo" position="0 0 0" rotation="0 0 0" width="0.7" height="1.24"></a-video>
         </a-entity>
     </a-scene>
 
@@ -60,7 +59,6 @@
             const sceneEl = document.querySelector("a-scene");
             const errorMsg = document.querySelector("#errorMsg");
 
-            // Handle URL parameters dynamically if a custom ID is passed (e.g. ?id=frame002)
             const urlParams = new URLSearchParams(window.location.search);
             const frameId = urlParams.get('id');
             
@@ -70,15 +68,11 @@
             }
 
             startButton.addEventListener("click", () => {
-                // Prime video element for mobile restriction bypass
-                videoEl.play().then(() => {
-                    videoEl.pause();
-                    videoEl.currentTime = 0;
-                }).catch(e => console.log("Prime error:", e));
-
-                // Hide overlay and boot up MindAR camera system safely
                 overlay.style.display = "none";
                 
+                // Force load & play video texture stream
+                videoEl.play().catch(e => console.log("Play error:", e));
+
                 try {
                     const arSystem = sceneEl.systems["mindar-image-system"];
                     arSystem.start();
@@ -88,12 +82,10 @@
                 }
             });
 
-            // Play video when tracking target is locked
             targetEl.addEventListener("targetFound", () => {
                 videoEl.play();
             });
 
-            // Pause when target is lost out of camera view
             targetEl.addEventListener("targetLost", () => {
                 videoEl.pause();
             });
