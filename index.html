@@ -3,89 +3,88 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <title>AR Memory Frame</title>
-    <!-- Include A-Frame and MindAR libraries -->
     <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
     <style>
         body { margin: 0; overflow: hidden; font-family: sans-serif; }
-        #loading {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            color: white; font-size: 18px; background: rgba(0,0,0,0.8);
-            padding: 15px 25px; border-radius: 8px; z-index: 999; text-align: center;
+        #overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); color: white; display: flex;
+            flex-direction: column; justify-content: center; align-items: center;
+            z-index: 9999; text-align: center; padding: 20px;
         }
         #startButton {
-            background: #ff4757; color: white; border: none; padding: 12px 24px;
-            font-size: 16px; border-radius: 25px; cursor: pointer; margin-top: 10px; font-weight: bold;
+            background: #ff4757; color: white; border: none; padding: 15px 30px;
+            font-size: 18px; font-weight: bold; border-radius: 30px; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255,71,87,0.4); margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <div id="loading">
-        <span id="loadingText">Preparing AR Experience...</span><br>
-        <button id="startButton" style="display:none;" onclick="startARExperience()">Tap to Start AR</button>
+
+    <!-- Mobile User Permission & Loading Overlay -->
+    <div id="overlay">
+        <h2>AR Memory Frame</h2>
+        <p>Tap the button below to allow camera access and start your video experience.</p>
+        <button id="startButton">Tap to Start AR</button>
     </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const frameId = urlParams.get('id');
+        const frameId = urlParams.get('id') || 'frame001';
 
-        let videoEl, targetEl, loadingEl;
+        const mindFileUrl = `./targets/${frameId}.mind`;
+        const videoFileUrl = `./videos/${frameId}.mp4`;
 
-        if (!frameId) {
-            document.getElementById('loadingText').innerText = "Error: No Frame ID specified!";
-        } else {
-            const mindFileUrl = `./targets/${frameId}.mind`;
-            const videoFileUrl = `./videos/${frameId}.mp4`;
+        // Inject the AR Scene
+        document.write(`
+            <a-scene mindar-image="imageTargetSrc: ${mindFileUrl}; autoStart: false;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
+                <a-assets>
+                    <video id="giftVideo" src="${videoFileUrl}" preload="auto" response-type="arraybuffer" loop crossorigin="anonymous" playsinline webkit-playsinline></video>
+                </a-assets>
 
-            // Inject the AR Scene dynamically into the page
-            document.write(`
-                <a-scene mindar-image="imageTargetSrc: ${mindFileUrl}; autoStart: false;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-                    <a-assets>
-                        <!-- Muted is critical for mobile autoplay rules -->
-                        <video id="giftVideo" src="${videoFileUrl}" preload="auto" loop crossorigin="anonymous" playsinline webkit-playsinline muted></video>
-                    </a-assets>
+                <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-                    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+                <a-entity mindar-image-target="targetIndex: 0" id="arTarget">
+                    <a-video src="#giftVideo" position="0 0 0" rotation="0 0 0" width="1" height="0.5625"></a-video>
+                </a-entity>
+            </a-scene>
+        `);
+    </script>
 
-                    <a-entity mindar-image-target="targetIndex: 0" id="arTarget">
-                        <a-video src="#giftVideo" position="0 0 0" rotation="0 0 0" width="1" height="0.5625"></a-video>
-                    </a-entity>
-                </a-scene>
-            `);
-        }
-
-        // Wait for page load to hook up elements
-        window.addEventListener('DOMContentLoaded', () => {
-            targetEl = document.querySelector("#arTarget");
-            videoEl = document.querySelector("#giftVideo");
-            loadingEl = document.querySelector("#loading");
-            const startBtn = document.querySelector("#startButton");
-
-            if (frameId) {
-                // Show start button to satisfy mobile browser audio/video user-gesture policies
-                document.getElementById('loadingText').innerText = "Ready to view your memory frame?";
-                startBtn.style.display = "inline-block";
-            }
-        });
-
-        // Triggered when user clicks the button
-        function startARExperience() {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const startButton = document.querySelector("#startButton");
+            const overlay = document.querySelector("#overlay");
+            const videoEl = document.querySelector("#giftVideo");
+            const targetEl = document.querySelector("#arTarget");
             const sceneEl = document.querySelector("a-scene");
-            loadingEl.style.display = "none";
-            
-            // Start the AR camera engine explicitly via user touch
-            sceneEl.systems["mindar-image-system"].start();
 
-            if (targetEl && videoEl) {
-                targetEl.addEventListener("targetFound", () => {
-                    videoEl.play().catch(e => console.log("Play error:", e));
-                });
+            startButton.addEventListener("click", () => {
+                // Hide overlay screen
+                overlay.style.display = "none";
 
-                targetEl.addEventListener("targetLost", () => {
+                // Prime/load the video for mobile browsers
+                videoEl.play().then(() => {
                     videoEl.pause();
-                });
-            }
-        }
+                    videoEl.currentTime = 0;
+                }).catch(e => console.log("Video priming error:", e));
+
+                // Start the MindAR camera system
+                const arSystem = sceneEl.systems["mindar-image-system"];
+                arSystem.start();
+            });
+
+            // Play video when picture frame is detected
+            targetEl.addEventListener("targetFound", () => {
+                videoEl.play();
+            });
+
+            // Pause video when camera looks away from picture frame
+            targetEl.addEventListener("targetLost", () => {
+                videoEl.pause();
+            });
+        });
     </script>
 </body>
 </html>
