@@ -28,8 +28,12 @@ const frameId = new URLSearchParams(
 function showError(message) {
   elements.loading.classList.add("hidden");
   elements.instructions.classList.add("hidden");
-  elements.error.textContent = message;
-  elements.error.classList.remove("hidden");
+  elements.welcome.classList.remove("hidden");
+
+  document.querySelector(".description").textContent = message;
+
+  elements.startButton.disabled = true;
+  elements.startButton.textContent = "Unavailable";
 }
 
 async function loadFrame() {
@@ -212,9 +216,8 @@ async function startExperience() {
     elements.startButton.disabled = false;
     elements.startButton.textContent = "Try Again";
 
-    showError(
-      "Unable to start the camera. Please allow camera access and try again."
-    );
+    document.querySelector(".description").textContent =
+  "Camera unavailable. Please check browser permissions and try again.";
   }
 }
 
