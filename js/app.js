@@ -132,7 +132,7 @@ function createScene(frame) {
       target = scene.querySelector("#gift-target");
       video = document.getElementById("gift-video");
 
-      arSystem = scene.systems["mindar-image"];
+      arSystem = scene.systems["mindar-image-system"];
 
       if (!arSystem || !target || !video) {
         reject(new Error("AR engine initialization failed."));
