@@ -1,1 +1,12 @@
 
+{
+  "demo": {
+    "name": "AR Demo Frame",
+    "target": "https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind",
+    "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    "targetIndex": 0,
+    "videoWidth": 1,
+    "videoHeight": 0.5625
+  }
+}
+
