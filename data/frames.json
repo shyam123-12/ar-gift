@@ -1,12 +1,42 @@
 
 {
-  "demo": {
-    "name": "AR Demo Frame",
+  "demo-center": {
+    "name": "Landscape Centre",
     "target": "https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind",
     "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-    "targetIndex": 0,
-    "videoWidth": 1,
-    "videoHeight": 0.5625
+    "layout": {
+      "sizeBy": "width",
+      "width": 0.75,
+      "x": 0,
+      "y": 0,
+      "z": 0.02,
+      "rotation": 0
+    }
+  },
+  "demo-top": {
+    "name": "Top Placement",
+    "target": "https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind",
+    "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    "layout": {
+      "sizeBy": "width",
+      "width": 0.45,
+      "x": 0,
+      "y": 0.25,
+      "z": 0.02,
+      "rotation": 0
+    }
+  },
+  "demo-bottom": {
+    "name": "Bottom Placement",
+    "target": "https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind",
+    "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    "layout": {
+      "sizeBy": "width",
+      "width": 0.45,
+      "x": 0,
+      "y": -0.25,
+      "z": 0.02,
+      "rotation": 0
+    }
   }
 }
-
