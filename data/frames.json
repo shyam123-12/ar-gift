@@ -1,7 +1,7 @@
 
 {
   "demo-center": {
-    "name": "Landscape Centre",
+    "name": "Original Demo - Centre",
     "target": "https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind",
     "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
     "layout": {
@@ -14,7 +14,7 @@
     }
   },
   "demo-top": {
-    "name": "Top Placement",
+    "name": "Original Demo - Top",
     "target": "https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind",
     "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
     "layout": {
@@ -27,14 +27,53 @@
     }
   },
   "demo-bottom": {
-    "name": "Bottom Placement",
+    "name": "Original Demo - Bottom",
     "target": "https://cdn.jsdelivr.net/gh/hiukim/mind-ar-js@1.2.5/examples/image-tracking/assets/card-example/card.mind",
     "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
     "layout": {
       "sizeBy": "width",
       "width": 0.45,
-      "x": 0,18
-      "y": -0.,
+      "x": 0,
+      "y": -0.18,
+      "z": 0.02,
+      "rotation": 0
+    }
+  },
+  "test-landscape": {
+    "name": "Landscape Target Test",
+    "target": "https://shyam123-12.github.io/ar-gift/targets/landscape.mind",
+    "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    "layout": {
+      "sizeBy": "width",
+      "width": 0.65,
+      "x": 0,
+      "y": 0,
+      "z": 0.02,
+      "rotation": 0
+    }
+  },
+  "test-portrait": {
+    "name": "Portrait Target Test",
+    "target": "https://shyam123-12.github.io/ar-gift/targets/portrait.mind",
+    "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    "layout": {
+      "sizeBy": "width",
+      "width": 0.65,
+      "x": 0,
+      "y": 0,
+      "z": 0.02,
+      "rotation": 0
+    }
+  },
+  "test-square": {
+    "name": "Square Target Test",
+    "target": "https://shyam123-12.github.io/ar-gift/targets/square.mind",
+    "video": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    "layout": {
+      "sizeBy": "width",
+      "width": 0.65,
+      "x": 0,
+      "y": 0,
       "z": 0.02,
       "rotation": 0
     }
